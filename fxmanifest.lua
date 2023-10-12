@@ -4,16 +4,15 @@ game "gta5"
 lua54 'yes'
 
 dependencies {
-    'ox_lib'
-}
-
-shared_scripts {
-    '@ox_lib/init.lua',
+    'ox_lib',
+    '/native:0xE27C97A0',
 }
 
 server_scripts {
-   "src/main.lua",
-   "example/main.lua"
+    "@vrp/lib/utils.lua",
+    '@ox_lib/init.lua',
+    "src/main.lua",
+    "example/main.lua",
 }
 
 server_only 'yes'

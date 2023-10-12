@@ -38,7 +38,7 @@ function express()
     self.listen = function(onSuccess)
         self.data.startTime = os.time()
         if onSuccess then onSuccess(self.data.port) end
-        SetHttpHandler(function(rawReq,rawRes)
+        return function(rawReq,rawRes)
             local req = Request(rawReq,self)
             local res = Response(rawRes,self)
             local splitedPath = utils.splitPath(req.path)
@@ -67,7 +67,7 @@ function express()
                 end
             end
             next()
-        end)
+        end
     end
 
     return self

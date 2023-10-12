@@ -18,7 +18,6 @@ return function(res,appInstance)
         if self.data.answered then
             return self
         end
-        self.setHeader("Content-Type","application/json")
         self.send(jsonRaw)
         return self
     end
@@ -27,7 +26,10 @@ return function(res,appInstance)
         if self.data.answered then
             return self
         end
-        if type(body) == "table" then body = json.encode(body) end
+        if type(body) == "table" then
+            self.setHeader("Content-Type","application/json")
+            body = json.encode(body)
+        end
         sendHTTPHead()
         res.send(body)
         self.data.answered = true
@@ -44,6 +46,7 @@ return function(res,appInstance)
 
     self.setHeader = function(header,value)
         self.data.headers[header] = value
+        return self
     end
 
     self.getHeader = function(header)

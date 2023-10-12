@@ -21,7 +21,8 @@ local Middlewares = require "src.middlewares.index"
 
 local app = express()
 
-app.use("/",Middlewares.parseJsonBody())
+app.use(Middlewares.parseJsonBody())
+app.use(Middlewares.parseCookies())
 
 app.use("/bla",function(req,res,next)
     res.json({ ok = true, test = req.test })
@@ -32,9 +33,15 @@ app.get("/",function(req,res,next)
 end)
 
 app.post("/",function(req,res)
-    res.json({ ok = true, body = (req.body or {}) })
+    res.status(200).json({ ok = true, body = (req.body or {}) })
 end)
 
-app.listen(function(port)
+app.use("/",function(req,res)
+    res.status(404).json({ error = "Not Found" })
+end)
+
+local handler = app.listen(function(port)
     print("Http server listening on port "..port)
 end)
+
+SetHttpHandler(handler)
