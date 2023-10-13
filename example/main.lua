@@ -1,4 +1,4 @@
-local Middlewares = require "src.middlewares.index"
+local Middlewares = require "src.middlewares.main"
 local express = require "src.main"
 
 local app = express()
