@@ -2,7 +2,7 @@ Request = require "src.models.request"
 Response = require "src.models.response"
 utils = require "src.utils.main"
 
-function express()
+return function(options)
     local self = {}
 
     self.data = {}
@@ -57,11 +57,11 @@ function express()
                 ::continue::
             end
             local currentIndex = 0
-            function next()
+            function next(data)
                 currentIndex = currentIndex + 1
                 local route = routesFiltered[currentIndex]
                 if route then
-                    route.execute(req,res,next)
+                    route.execute(req,res,next,data)
                 else
                     res.status(404).send("Not Found")
                 end
