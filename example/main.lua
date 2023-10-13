@@ -41,7 +41,7 @@ app.use("/",function(req,res)
 end)
 
 local handler = app.listen(function(port)
-    print("Http server listening on port "..port)
+    print("Http server listening on http://localhost:"..port.."/"..GetCurrentResourceName().."/")
 end)
 
 SetHttpHandler(handler)

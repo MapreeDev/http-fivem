@@ -1,13 +1,13 @@
 return function(res,appInstance)
     local self = {}
 
+    self._raw = res
+
     self.data = {}
 
     self.data.answered = false
     self.data.status = 200
     self.data.headers = {}
-
-    self._raw = res
 
     local function sendHTTPHead()
         self.setHeader("x-powered-by","MapreeDev")
