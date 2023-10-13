@@ -9,6 +9,7 @@ middlewares.parseJsonBody = function()
         end)
     end
 end
+
 middlewares.parseCookies = function()
     return function (req, res, next)
         local cookieList = {

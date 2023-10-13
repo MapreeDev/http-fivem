@@ -67,4 +67,57 @@ utils.putMethodsLogic = function(onRegister,inheritObject)
     return inheritObject
 end
 
+utils.validator = function(data, options, functionalValidatorOptions)
+    local error = functionalValidatorOptions and functionalValidatorOptions.customError or defaultError
+    for key, config in pairs(options) do
+        if type(config) == "string" then
+            config = presetsConfig[config]
+        end
+        if config.required == true or (type(config.required) == "table" and config.required.value == true) then
+            local message = type(config.required) == "table" and config.required.message:gsub("%%KEY%%", key)
+            if not data[key] then
+                error(message or "Missing `" .. key .. "`", key)
+            end
+        end
+        if config.minLength then
+            local minLength = type(config.minLength) == "number" and config.minLength
+            if type(config.minLength) == "table" then
+                minLength = config.minLength.value
+            end
+            local message = type(config.minLength) == "table" and config.minLength.message:gsub("%%KEY%%", key)
+            if minLength and #data[key] < minLength then
+                error(message or "`" .. key .. "` Must need " .. minLength .. " characters", key)
+            end
+        end
+        if config.maxLength then
+            local maxLength = type(config.maxLength) == "number" and config.maxLength
+            if type(config.maxLength) == "table" then
+                maxLength = config.maxLength.value
+            end
+            local message = type(config.maxLength) == "table" and config.maxLength.message:gsub("%%KEY%%", key)
+            if maxLength and #data[key] > maxLength then
+                error(message or "`" .. key .. "` Must need " .. maxLength .. " characters", key)
+            end
+        end
+        if config.custom then
+            local customFn = type(config.custom) == "function" and config.custom
+            if type(config.custom) == "table" then
+                customFn = config.custom.value
+            end
+            local message = type(config.custom) == "table" and config.custom.message:gsub("%%KEY%%", key)
+            if customFn and not customFn(data[key]) then
+                error(message or "`" .. key .. "` Cannot pass custom verification", key)
+            end
+        end
+        if config.pattern then
+            local pattern = type(config.pattern) == "userdata" and config.pattern or config.pattern.value
+            local message = type(config.pattern) == "userdata" and config.pattern.message:gsub("%%KEY%%", key)
+            if not pattern:match(data[key]) then
+                error(message or "`" .. key .. "` must need to match pattern", key)
+            end
+        end
+    end
+    return true
+end
+
 return utils

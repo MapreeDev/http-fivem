@@ -73,6 +73,5 @@ return function(options)
             next()
         end
     end
-
     return self
 end

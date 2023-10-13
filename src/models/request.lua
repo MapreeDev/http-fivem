@@ -3,6 +3,10 @@ return function(req,appInstance)
 
     self._raw = req
 
+    local function parseQueryUrl()
+        
+    end
+
     self.path = utils.cleanPath(req.path)
     self.method = req.method
     self.headers = req.headers
