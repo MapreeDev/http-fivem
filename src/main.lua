@@ -45,13 +45,13 @@ return function(options)
             local routesFiltered = {}
             for i=1,#splitedPath do
                 local pathToSearch = splitedPath[i]
-                if not self.data.routes[pathToSearch] then goto continue end
+                if not pathToSearch or not self.data.routes[pathToSearch] then goto continue end
                 local isFinal = (i == #splitedPath)
                 for i=1,#self.data.routes[pathToSearch] do
                     local routeSearched = self.data.routes[pathToSearch][i]
                     if not isFinal and routeSearched.method then goto sub_continue end
                     if isFinal and routeSearched.method and routeSearched.method ~= req.method then goto sub_continue end
-                    routesFiltered[#routesFiltered+1] = self.data.routes[pathToSearch][i]
+                    routesFiltered[#routesFiltered+1] = routeSearched
                     ::sub_continue::
                 end
                 ::continue::
@@ -63,7 +63,11 @@ return function(options)
                 if route then
                     route.execute(req,res,next,data)
                 else
-                    res.status(404).send("Not Found")
+                    if currentIndex > #routesFiltered then
+                        res.status(404).send("Not Found")
+                    else
+                        next()
+                    end
                 end
             end
             next()

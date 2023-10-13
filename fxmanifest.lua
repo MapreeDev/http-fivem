@@ -1,6 +1,8 @@
 fx_version "adamant"
 game "gta5"
 
+author "sigma store"
+
 lua54 'yes'
 
 dependencies {

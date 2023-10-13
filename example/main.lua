@@ -15,16 +15,16 @@ app.use("/",function(req,res,next)
     next()
 end)
 
+app.get("/testing",function(req,res,next)
+    res.send({ ok = true })
+end)
+
 app.get("/",function(req,res,next)
     res.send("Ok G E T")
 end)
 
 app.post("/",function(req,res)
     res.status(200).json({ ok = true, body = (req.body or {}) })
-end)
-
-app.use("/",function(req,res)
-    res.status(404).json({ error = "Not Found" })
 end)
 
 local handler = app.listen(function(port)
