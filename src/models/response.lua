@@ -10,17 +10,17 @@ return function(res,appInstance)
 
     local function sendHTTPHead()
         self.setHeader("x-powered-by","MapreeDev")
+        utils.logger("",)
         print(json.encode(self.data.headers))
         res.writeHead(self.data.status,self.data.headers)
     end
 
-    self.json = function(jsonRaw)
-        self.send(jsonRaw)
-        return self
+    self.json = function(...)
+        self.send(...,true)
     end
 
-    self.send = function(body)
-        if type(body) == "table" then
+    self.send = function(body,onlyJson)
+        if type(body) == "table" or onlyJson then
             self.setHeader("Content-Type","application/json")
             body = json.encode(body)
         end

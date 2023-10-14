@@ -1,7 +1,9 @@
 local Middlewares = require "src.middlewares.main"
 local express = require "src.main"
 
-local app = express()
+local app = express({
+    development = true
+})
 
 app.use(Middlewares.parseJsonBody())
 app.use(Middlewares.parseCookies())
@@ -10,13 +12,8 @@ app.use("/json",function(req,res,next)
     res.json({ ok = true, test = req.test })
 end)
 
-app.use("/",function(req,res,next)
-    print("Accessing "..req.path.." in method "..req.method)
-    next()
-end)
-
 app.get("/testing",function(req,res,next)
-    res.send({ ok = true })
+    res.json({ ok = true })
 end)
 
 app.get("/",function(req,res,next)

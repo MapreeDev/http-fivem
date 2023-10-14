@@ -8,7 +8,33 @@ utils.cleanPath = function(path)
     if path:sub(-1) == "/" and path:len() > 1 then
         path = path:sub(1, -2)
     end
+    local queryStart = path:find("?")
+    if queryStart then
+        path = path:sub(1, queryStart - 1)
+    end
     return path
+end
+
+utils.extractQuery = function(url)
+    local queryStart = url:find("?")
+    if not queryStart then
+        return {}
+    end
+
+    local query = url:sub(queryStart + 1)
+    local queryTable = {}
+
+    for key, value in query:gmatch("([^&=?]-)=([^&=?]+)") do
+        key = key:gsub("%%(%x%x)", function(hex)
+            return string.char(tonumber(hex, 16))
+        end)
+        value = value:gsub("%%(%x%x)", function(hex)
+            return string.char(tonumber(hex, 16))
+        end)
+        queryTable[key] = value
+    end
+
+    return queryTable
 end
 
 utils.splitPath = function(path)
@@ -118,6 +144,11 @@ utils.validator = function(data, options, functionalValidatorOptions)
         end
     end
     return true
+end
+
+utils.logger = function(message,canLog)
+    if not canLog then return end
+    print(message)
 end
 
 return utils

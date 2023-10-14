@@ -1,8 +1,10 @@
 Request = require "src.models.request"
 Response = require "src.models.response"
 utils = require "src.utils.main"
+Config = require "config.main"
 
 return function(options)
+    if not options then options = Config.defaultServerOptions end
     local self = {}
 
     self.data = {}
@@ -12,11 +14,13 @@ return function(options)
     self.data.rsc = GetCurrentResourceName()
     self.data.port = GetConvar("port","30120")
     self.data.routes = {}
+    self.data.isDevelopment = options.development or Config.defaultServerOptions.development
 
     local function addRoute(path,execute,method)
         if not self.data.routes[path] then self.data.routes[path] = {} end
         local idx = #self.data.routes[path]+1
         self.data.routes[path][idx] = { method = method, execute = execute }
+        utils.logger("Route Added method: "..(method or "ALL").." path: "..path.." index: "..idx,self.data.isDevelopment)
     end
 
     utils.putMethodsLogic(addRoute,self)
@@ -41,6 +45,7 @@ return function(options)
         return function(rawReq,rawRes)
             local req = Request(rawReq,self)
             local res = Response(rawRes,self)
+            utils.logger("New request income to "..req.path.." in method "..req.method.."",self.data.isDevelopment)
             local splitedPath = utils.splitPath(req.path)
             local routesFiltered = {}
             for i=1,#splitedPath do
