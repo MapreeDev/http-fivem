@@ -17,11 +17,21 @@ app.get("/testing",function(req,res,next)
 end)
 
 app.get("/",function(req,res,next)
+    error("Test",json.encode({ test = true }))
     res.send("Ok G E T")
+end)
+
+app.get("/error",function(req,res)
+    error("Test",json.encode({ test = true }))
 end)
 
 app.post("/",function(req,res)
     res.status(200).json({ ok = true, body = (req.body or {}) })
+end)
+
+app.setErrorHandling(function(req,res,err)
+    print(json.encode(utils.parseError(err)))
+    res.send("Error founded")
 end)
 
 local handler = app.listen(function(port)

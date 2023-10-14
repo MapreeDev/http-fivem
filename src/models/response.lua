@@ -10,7 +10,6 @@ return function(res,appInstance)
 
     local function sendHTTPHead()
         self.setHeader("x-powered-by","MapreeDev")
-        utils.logger("",)
         print(json.encode(self.data.headers))
         res.writeHead(self.data.status,self.data.headers)
     end

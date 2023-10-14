@@ -15,6 +15,7 @@ return function(options)
     self.data.port = GetConvar("port","30120")
     self.data.routes = {}
     self.data.isDevelopment = options.development or Config.defaultServerOptions.development
+    self.data.errorHandling = function() end
 
     local function addRoute(path,execute,method)
         if not self.data.routes[path] then self.data.routes[path] = {} end
@@ -37,6 +38,11 @@ return function(options)
             local middleware = middlewares[i]
             addRoute(path,middleware)
         end
+    end
+
+    self.setErrorHandling = function(errorHandling)
+        if type(errorHandling) ~= "function" then print("Error handling must be a function") end
+        self.data.errorHandling = errorHandling
     end
 
     self.listen = function(onSuccess)
@@ -75,7 +81,10 @@ return function(options)
                     end
                 end
             end
-            next()
+            local status,err = pcall(function()
+                next()
+            end)
+            if not status and err then self.data.errorHandling(req,res,err) end
         end
     end
     return self
