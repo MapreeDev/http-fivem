@@ -35,7 +35,6 @@ HTTP is a lightweight and simple HTTP server for FiveM, inspired by the syntax o
 - Support for handling GET, POST, and other HTTP methods.
 - Parse JSON body.
 - Parse cookies.
-- Parse URL query.
 
 ### Planned
 
