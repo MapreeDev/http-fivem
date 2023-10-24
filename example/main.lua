@@ -5,37 +5,41 @@ local app = express({
     development = true
 })
 
+-- Middleware to parse JSON body and cookies
 app.use(Middlewares.parseJsonBody())
 app.use(Middlewares.parseCookies())
 
-app.use("/json",function(req,res,next)
-    res.json({ ok = true, test = req.test })
-end)
-
-app.get("/testing",function(req,res,next)
+-- Route to handle JSON response
+app.get("/testing", function(req, res, next)
     res.json({ ok = true })
 end)
 
-app.get("/",function(req,res,next)
-    error("Test",json.encode({ test = true }))
-    res.send("Ok G E T")
+-- Default route for GET request
+app.get("/", function(req, res, next)
+    res.send("Hello Fivem")
 end)
 
-app.get("/error",function(req,res)
-    error("Test",json.encode({ test = true }))
+-- Route for GET request at '/error'
+app.get("/error", function(req, res)
+    error("Test", json.encode({ test = true }))
 end)
 
-app.post("/",function(req,res)
+-- Route for POST request at '/'
+app.post("/", function(req, res)
     res.status(200).json({ ok = true, body = (req.body or {}) })
 end)
 
-app.setErrorHandling(function(req,res,err)
-    print(json.encode(utils.parseError(err)))
-    res.send("Error founded")
+-- Error handling middleware
+app.setErrorHandling(function(req, res, err)
+    res.status(500).send({
+        message = err
+    })
 end)
 
-local handler = app.listen(function(port)
-    print("Http server listening on http://localhost:"..port.."/"..GetCurrentResourceName().."/")
+-- Build http handler
+local handler = app.listen(function()
+    print("HTTP server listening on http://localhost:30120/"..GetCurrentResourceName().."/")
 end)
 
+-- Set the HTTP handler
 SetHttpHandler(handler)

@@ -9,13 +9,11 @@ return function(options)
 
     self.data = {}
 
-    self.data.sharedSecret = GetConvar("shared_secret","secret")
     self.data.startTime = nil
     self.data.rsc = GetCurrentResourceName()
-    self.data.port = GetConvar("port","30120")
     self.data.routes = {}
     self.data.isDevelopment = options.development or Config.defaultServerOptions.development
-    self.data.errorHandling = function() end
+    self.data.errorHandling = nil
 
     local function addRoute(path,execute,method)
         if not self.data.routes[path] then self.data.routes[path] = {} end
@@ -47,7 +45,7 @@ return function(options)
 
     self.listen = function(onSuccess)
         self.data.startTime = os.time()
-        if onSuccess then onSuccess(self.data.port) end
+        if onSuccess then onSuccess() end
         return function(rawReq,rawRes)
             local req = Request(rawReq,self)
             local res = Response(rawRes,self)
@@ -84,7 +82,7 @@ return function(options)
             local status,err = pcall(function()
                 next()
             end)
-            if not status and err then self.data.errorHandling(req,res,err) end
+            if not status and err and self.data.errorHandling then self.data.errorHandling(req,res,err) end
         end
     end
     return self

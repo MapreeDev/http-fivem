@@ -94,6 +94,7 @@ utils.putMethodsLogic = function(onRegister,inheritObject)
 end
 
 utils.validator = function(data, options, functionalValidatorOptions)
+    if not data then error("Provide a data") end
     local error = functionalValidatorOptions and functionalValidatorOptions.customError or defaultError
     for key, config in pairs(options) do
         if type(config) == "string" then
@@ -105,27 +106,28 @@ utils.validator = function(data, options, functionalValidatorOptions)
                 error(message or "Missing `" .. key .. "`", key)
             end
         end
-        if config.minLength then
+        if config.minLength and data[key] then
             local minLength = type(config.minLength) == "number" and config.minLength
             if type(config.minLength) == "table" then
                 minLength = config.minLength.value
             end
             local message = type(config.minLength) == "table" and config.minLength.message:gsub("%%KEY%%", key)
-            if minLength and #data[key] < minLength then
+            print(minLength,data[key],string.len(data[key]))
+            if minLength and string.len(data[key]) < minLength then
                 error(message or "`" .. key .. "` Must need " .. minLength .. " characters", key)
             end
         end
-        if config.maxLength then
+        if config.maxLength and data[key] then
             local maxLength = type(config.maxLength) == "number" and config.maxLength
             if type(config.maxLength) == "table" then
                 maxLength = config.maxLength.value
             end
             local message = type(config.maxLength) == "table" and config.maxLength.message:gsub("%%KEY%%", key)
-            if maxLength and #data[key] > maxLength then
+            if maxLength and string.len(data[key]) > maxLength then
                 error(message or "`" .. key .. "` Must need " .. maxLength .. " characters", key)
             end
         end
-        if config.custom then
+        if config.custom and data[key] then
             local customFn = type(config.custom) == "function" and config.custom
             if type(config.custom) == "table" then
                 customFn = config.custom.value
@@ -135,7 +137,7 @@ utils.validator = function(data, options, functionalValidatorOptions)
                 error(message or "`" .. key .. "` Cannot pass custom verification", key)
             end
         end
-        if config.pattern then
+        if config.pattern and data[key] then
             local pattern = type(config.pattern) == "userdata" and config.pattern or config.pattern.value
             local message = type(config.pattern) == "userdata" and config.pattern.message:gsub("%%KEY%%", key)
             if not pattern:match(data[key]) then
@@ -151,36 +153,32 @@ utils.logger = function(message,canLog)
     print(message)
 end
 
-utils.parseError = function(errorMessage)
-    local errorInfo = {}
+-- utils.parseError = function(errorMessage)
+--     local errorInfo = {}
 
-    -- Extrai o tipo de erro e a mensagem
-    errorInfo.type, errorInfo.message = errorMessage:match('^{"type":"([^"]*)","message":"(.-)"}$')
+--     errorInfo.type, errorInfo.message = errorMessage:match('^{"type":"([^"]*)","message":"(.-)"}$')
 
-    if not errorInfo.type then
-        -- Se não conseguir extrair o tipo de erro, assume que é um formato desconhecido
-        errorInfo.type = "UnknownErrorFormat"
-        errorInfo.message = errorMessage
-        return errorInfo
-    end
+--     if not errorInfo.type then
+--         -- Se não conseguir extrair o tipo de erro, assume que é um formato desconhecido
+--         errorInfo.type = "UnknownErrorFormat"
+--         errorInfo.message = errorMessage
+--         return errorInfo
+--     end
 
-    -- Tenta extrair dados personalizados
-    local customData = errorMessage:match('{"type":"[^"]*","message":".-","(.-)"}')
-    if customData then
-        local success, data = pcall(load("return {" .. customData .. "}"))
-        if success then
-            errorInfo.customData = data
-        else
-            errorInfo.customData = { ["_raw"] = customData }
-        end
-    else
-        errorInfo.customData = {}
-    end
+--     -- Tenta extrair dados personalizados
+--     local customData = errorMessage:match('{"type":"[^"]*","message":".-","(.-)"}')
+--     if customData then
+--         local success, data = pcall(load("return {" .. customData .. "}"))
+--         if success then
+--             errorInfo.customData = data
+--         else
+--             errorInfo.customData = { ["_raw"] = customData }
+--         end
+--     else
+--         errorInfo.customData = {}
+--     end
 
-    return errorInfo
-end
-
-
-
+--     return errorInfo
+-- end
 
 return utils
