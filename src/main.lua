@@ -60,6 +60,7 @@ return function(options)
                     local routeSearched = self.data.routes[pathToSearch][i]
                     if not isFinal and routeSearched.method then goto sub_continue end
                     if isFinal and routeSearched.method and routeSearched.method ~= req.method then goto sub_continue end
+                    routeSearched.path = pathToSearch
                     routesFiltered[#routesFiltered+1] = routeSearched
                     ::sub_continue::
                 end
@@ -70,6 +71,7 @@ return function(options)
                 currentIndex = currentIndex + 1
                 local route = routesFiltered[currentIndex]
                 if route then
+                    req.route = route.path
                     route.execute(req,res,next,data)
                 else
                     if currentIndex > #routesFiltered then
@@ -82,7 +84,12 @@ return function(options)
             local status,err = pcall(function()
                 next()
             end)
-            if not status and err and self.data.errorHandling then self.data.errorHandling(req,res,err) end
+            if not status and err and self.data.errorHandling then
+                local status,err = pcall(function()
+                    self.data.errorHandling(req,res,err)
+                end)
+                if not status and err then print("Ocurred a error in errorHandling "..err) end
+            end
         end
     end
     return self

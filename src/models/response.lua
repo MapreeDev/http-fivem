@@ -10,7 +10,9 @@ return function(res,appInstance)
 
     local function sendHTTPHead()
         self.setHeader("x-powered-by","MapreeDev")
-        print(json.encode(self.data.headers))
+        for k,w in pairs(self.data.headers) do
+            if type(w) ~= "string" then self.data.headers[k] = tostring(self.data.headers[k]) end
+        end
         res.writeHead(self.data.status,self.data.headers)
     end
 
@@ -24,7 +26,7 @@ return function(res,appInstance)
             body = json.encode(body)
         end
         sendHTTPHead()
-        res.send(body)
+        res.send(body or "")
         return self
     end
 

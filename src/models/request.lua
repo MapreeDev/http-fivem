@@ -3,6 +3,7 @@ return function(req,appInstance)
 
     self._raw = req
 
+    self.app = appInstance
     self.path = utils.cleanPath(req.path)
     self.query = utils.extractQuery(req.path)
     self.method = req.method

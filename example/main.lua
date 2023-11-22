@@ -5,9 +5,14 @@ local app = express({
     development = true
 })
 
--- Middleware to parse JSON body and cookies
+-- Middleware to parse JSON body, cookies and cors
 app.use(Middlewares.parseJsonBody())
 app.use(Middlewares.parseCookies())
+app.use(Middlewares.cors({ origin = {"www.mapree.dev","mapree.dev"} }))
+
+-- Route to handle static files
+
+app.use("/public",Middlewares.static({ folder = "/example/public", },{ maxAge = 86400 }))
 
 -- Route to handle JSON response
 app.get("/testing", function(req, res, next)
@@ -15,7 +20,7 @@ app.get("/testing", function(req, res, next)
 end)
 
 -- Default route for GET request
-app.get("/", function(req, res, next)
+app.get("/",function(req, res, next)
     res.send("Hello Fivem")
 end)
 
@@ -31,6 +36,7 @@ end)
 
 -- Error handling middleware
 app.setErrorHandling(function(req, res, err)
+    print(err)
     res.status(500).send({
         message = err
     })

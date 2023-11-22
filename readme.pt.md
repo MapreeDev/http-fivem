@@ -35,10 +35,11 @@ HTTP é um servidor HTTP leve e simples para FiveM, inspirado na sintaxe do Expr
 - Suporte para manipulação de GET, POST e outros métodos HTTP.
 - Análise do corpo JSON.
 - Análise de cookies.
+- Serviço de arquivos estáticos.
+- Cors
 
 ### Planejados
 
-- Serviço de arquivos estáticos.
 - Analisador de parâmetros de rota.
 - Gerenciamento de sessão.
 - Integração com WebSocket.

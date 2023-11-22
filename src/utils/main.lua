@@ -112,7 +112,6 @@ utils.validator = function(data, options, functionalValidatorOptions)
                 minLength = config.minLength.value
             end
             local message = type(config.minLength) == "table" and config.minLength.message:gsub("%%KEY%%", key)
-            print(minLength,data[key],string.len(data[key]))
             if minLength and string.len(data[key]) < minLength then
                 error(message or "`" .. key .. "` Must need " .. minLength .. " characters", key)
             end
@@ -151,6 +150,57 @@ end
 utils.logger = function(message,canLog)
     if not canLog then return end
     print(message)
+end
+
+utils.destructuring = function(obj,inheriter)
+    local deepObj = obj
+    for k,v in pairs(inheriter) do
+        deepObj[k] = v
+    end
+    return deepObj
+end
+
+utils.urlParser = function(url)
+    local parsed = {}
+    local pattern = "([^:]+):?//?([^/]+)([^#]*)#?(.*)"
+    local scheme, host, path, fragment = url:match(pattern)
+    if not host then
+        host = url:match("([^/]+)")
+        path = url:sub(host:len() + 1)
+    end
+    local host, port = host:match("([^:]+):?(.*)")
+    parsed.host = host
+    parsed.port = tonumber(port) or nil
+    if scheme then parsed.scheme = scheme end
+    parsed.hostname = host:match("%.?([^%.]+%.[^%.]+)$") or host
+    if path and path ~= "" then
+        parsed.path = utils.cleanPath(path)
+        parsed.pathSegments = utils.splitPath(parsed.path)
+    else
+        parsed.pathSegments = { "/" }
+    end
+    if fragment then parsed.fragment = fragment end
+    return parsed
+end
+
+utils.resolvePath = function(...)
+    local parts = {...}
+    local resolvedPath = ""
+    for _, part in ipairs(parts) do
+        if not part:match("^/") then part = "/" .. part end
+        resolvedPath = resolvedPath .. part
+    end
+    return resolvedPath
+end
+
+utils.getExt = function(path)
+    local filename = path:match("[^/]+$")
+    local extension = filename:match("%.([^%.]+)$")
+    return extension or ""
+end
+
+utils.getMimetypeFromExtension = function(extension)
+    return Config.defaultMiddlewareOptions.static.extensionToMimetype[extension] or Config.defaultMiddlewareOptions.static.defaultMimeType
 end
 
 -- utils.parseError = function(errorMessage)

@@ -35,10 +35,11 @@ HTTP is a lightweight and simple HTTP server for FiveM, inspired by the syntax o
 - Support for handling GET, POST, and other HTTP methods.
 - Parse JSON body.
 - Parse cookies.
+- Static file serving.
+- Cors
 
 ### Planned
 
-- Static file serving.
 - Route params parser.
 - Session management.
 - WebSocket integration.
