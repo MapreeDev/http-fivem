@@ -23,7 +23,7 @@ HTTP is a lightweight and simple HTTP server for FiveM, inspired by the syntax o
 
 6. Start your FiveM server.
 
-7. Visit `http://localhost:30120` in your browser to see the default welcome message.
+7. Visit `http://localhost:30120/http` in your browser to see the default welcome message.
 
 ## Features
 
