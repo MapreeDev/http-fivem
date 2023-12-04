@@ -1,4 +1,7 @@
-local Middlewares = require "src.middlewares.main"
+local cors = require "src.middlewares.cors"
+local jsonBody = require "src.middlewares.jsonBody"
+local cookies = require "src.middlewares.cookies"
+local static = require "src.middlewares.static"
 local express = require "src.main"
 local Error = require "src.utils.error"
 
@@ -7,12 +10,12 @@ local app = express({
 })
 
 -- Middleware to parse JSON body, cookies and cors
-app.use(Middlewares.parseJsonBody())
-app.use(Middlewares.parseCookies())
-app.use(Middlewares.cors({ origin = {"www.mapree.dev","mapree.dev"} }))
+app.use(jsonBody())
+app.use(cookies())
+app.use(cors({ origin = {"www.mapree.dev","mapree.dev"} }))
 
 -- Route to handle static files
-app.use("/public",Middlewares.static({ folder = "/example/public", },{ maxAge = 86400 }))
+app.use("/public",static({ folder = "/example/public", },{ maxAge = 86400 }))
 
 -- Route to handle JSON response
 app.get("/testing", function(req, res, next)

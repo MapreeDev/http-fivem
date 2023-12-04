@@ -2,7 +2,7 @@ fx_version "adamant"
 game "gta5"
 
 author "Mapree Dev"
-version "0.0.1"
+version "0.1.0"
 
 lua54 'yes'
 
