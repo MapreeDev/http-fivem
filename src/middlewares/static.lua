@@ -10,7 +10,7 @@ return function(pathOpt,options)
         end
         local forwardErr = not options.fallTrough
         local relativePath = string.gsub(req.path,"^"..req.route,"")
-        local resolvedPath = utils.resolvePath(pathOpt.folder,relativePath)
+        local resolvedPath = Path.resolve(pathOpt.folder,relativePath)
         local fileBody = LoadResourceFile(pathOpt.rsc or req.app.data.rsc, resolvedPath)
         if not fileBody then
             if forwardErr then
@@ -20,7 +20,7 @@ return function(pathOpt,options)
             end
             next()
         end
-        local mimeType = utils.getMimetypeFromExtension(utils.getExt(resolvedPath))
+        local mimeType = Utils.getMimetypeFromExtension(Path.extname(resolvedPath))
         if options.maxAge and type(options.maxAge) == "number" then
             res.setHeader("Cache-Control","max-age="..options.maxAge)
         end

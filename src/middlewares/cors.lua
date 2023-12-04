@@ -1,5 +1,5 @@
 return function(cfgOptions)
-       local options = Config.defaultMiddlewareOptions.cors
+    local options = Config.defaultMiddlewareOptions.cors
     options = Utils.destructuring(options,cfgOptions or {})
     if type(options.origin) ~= "table" and type(options.origin) ~= "string" then
         error("invalid cors configuration")
@@ -48,7 +48,7 @@ return function(cfgOptions)
     return function(req,res,next)
         local reqOrigin = req.headers.Origin
         if reqOrigin then
-            local parsedUrl = utils.urlParser(reqOrigin)
+            local parsedUrl = Utils.urlParser(reqOrigin)
             if parsedUrl.host then reqOrigin = parsedUrl.host end
         end
         if req.method == "OPTIONS" then
