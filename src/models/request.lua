@@ -4,8 +4,8 @@ return function(req,appInstance)
     self._raw = req
 
     self.app = appInstance
-    self.path = utils.cleanPath(req.path)
-    self.query = utils.extractQuery(req.path)
+    self.path = Path.clean(req.path)
+    self.query = Utils.extractQuery(req.path)
     self.method = req.method
     self.headers = req.headers
     self["user-agent"] = req["User-Agent"]

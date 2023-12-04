@@ -1,20 +1,5 @@
 local utils = {}
 
-utils.cleanPath = function(path)
-    path = path:gsub("//+", "/")
-    if path:sub(1, 1) ~= "/" then
-        path = "/" .. path
-    end
-    if path:sub(-1) == "/" and path:len() > 1 then
-        path = path:sub(1, -2)
-    end
-    local queryStart = path:find("?")
-    if queryStart then
-        path = path:sub(1, queryStart - 1)
-    end
-    return path
-end
-
 utils.extractQuery = function(url)
     local queryStart = url:find("?")
     if not queryStart then
@@ -35,20 +20,6 @@ utils.extractQuery = function(url)
     end
 
     return queryTable
-end
-
-utils.splitPath = function(path)
-    local parts = {}
-    local currentPart = ""
-
-    table.insert(parts,"/")
-
-    for part in path:gmatch("[^/]+") do
-        currentPart = currentPart .. "/" .. part
-        parts[#parts+1] = currentPart
-    end
-
-    return parts
 end
 
 utils.getNonIndexedTableLength = function(table)
@@ -83,7 +54,7 @@ utils.putMethodsLogic = function(onRegister,inheritObject)
                 middlewares = {path}
                 path = "/"
             end
-            path = utils.cleanPath(path)
+            path = Path.clean(path)
             for i=1,#middlewares do
                 local middleware = middlewares[i]
                 if onRegister and type(onRegister) == "function" then onRegister(path,middleware,method) end
@@ -181,22 +152,6 @@ utils.urlParser = function(url)
     end
     if fragment then parsed.fragment = fragment end
     return parsed
-end
-
-utils.resolvePath = function(...)
-    local parts = {...}
-    local resolvedPath = ""
-    for _, part in ipairs(parts) do
-        if not part:match("^/") then part = "/" .. part end
-        resolvedPath = resolvedPath .. part
-    end
-    return resolvedPath
-end
-
-utils.getExt = function(path)
-    local filename = path:match("[^/]+$")
-    local extension = filename:match("%.([^%.]+)$")
-    return extension or ""
 end
 
 utils.getMimetypeFromExtension = function(extension)

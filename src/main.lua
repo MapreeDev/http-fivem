@@ -1,7 +1,9 @@
 Request = require "src.models.request"
 Response = require "src.models.response"
-utils = require "src.utils.main"
+Utils = require "src.utils.main"
 Config = require "config.main"
+Path = require "src.utils.path"
+Error = require "src.utils.error"
 
 return function(options)
     if not options then options = Config.defaultServerOptions end
@@ -19,10 +21,10 @@ return function(options)
         if not self.data.routes[path] then self.data.routes[path] = {} end
         local idx = #self.data.routes[path]+1
         self.data.routes[path][idx] = { method = method, execute = execute }
-        utils.logger("Route Added method: "..(method or "ALL").." path: "..path.." index: "..idx,self.data.isDevelopment)
+        Utils.logger("Route Added method: "..(method or "ALL").." path: "..path.." index: "..idx,self.data.isDevelopment)
     end
 
-    utils.putMethodsLogic(addRoute,self)
+    Utils.putMethodsLogic(addRoute,self)
  
     self.use = function(path,...)
         local middlewares = {...}
@@ -31,7 +33,7 @@ return function(options)
             middlewares = {path}
             path = "/"
         end
-        path = utils.cleanPath(path)
+        path = Path.clean(path)
         for i=1,#middlewares do
             local middleware = middlewares[i]
             addRoute(path,middleware)
@@ -49,8 +51,8 @@ return function(options)
         return function(rawReq,rawRes)
             local req = Request(rawReq,self)
             local res = Response(rawRes,self)
-            utils.logger("New request income to "..req.path.." in method "..req.method.."",self.data.isDevelopment)
-            local splitedPath = utils.splitPath(req.path)
+            Utils.logger("New request income to "..req.path.." in method "..req.method.."",self.data.isDevelopment)
+            local splitedPath = Path.split(req.path)
             local routesFiltered = {}
             for i=1,#splitedPath do
                 local pathToSearch = splitedPath[i]
@@ -84,11 +86,14 @@ return function(options)
             local status,err = pcall(function()
                 next()
             end)
-            if not status and err and self.data.errorHandling then
-                local status,err = pcall(function()
-                    self.data.errorHandling(req,res,err)
-                end)
-                if not status and err then print("Ocurred a error in errorHandling "..err) end
+            if not status and err then
+                Utils.logger("Error in route: "..err,self.data.isDevelopment)
+                if self.data.errorHandling then
+                    local status,err = pcall(function()
+                        self.data.errorHandling(req,res,Error.parse(err))
+                    end)
+                    if not status and err then print("Ocurred a error in errorHandling "..err) end
+                end
             end
         end
     end

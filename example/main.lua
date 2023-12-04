@@ -1,5 +1,6 @@
 local Middlewares = require "src.middlewares.main"
 local express = require "src.main"
+local Error = require "src.utils.error"
 
 local app = express({
     development = true
@@ -11,7 +12,6 @@ app.use(Middlewares.parseCookies())
 app.use(Middlewares.cors({ origin = {"www.mapree.dev","mapree.dev"} }))
 
 -- Route to handle static files
-
 app.use("/public",Middlewares.static({ folder = "/example/public", },{ maxAge = 86400 }))
 
 -- Route to handle JSON response
@@ -26,7 +26,7 @@ end)
 
 -- Route for GET request at '/error'
 app.get("/error", function(req, res)
-    error("Test", json.encode({ test = true }))
+    Error.throw(403,{ custom = true, field = "test" })
 end)
 
 -- Route for POST request at '/'
@@ -36,10 +36,7 @@ end)
 
 -- Error handling middleware
 app.setErrorHandling(function(req, res, err)
-    print(err)
-    res.status(500).send({
-        message = err
-    })
+    res.status(err.statusCode).send(err.body)
 end)
 
 -- Build http handler

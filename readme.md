@@ -37,6 +37,7 @@ HTTP is a lightweight and simple HTTP server for FiveM, inspired by the syntax o
 - Parse cookies.
 - Static file serving.
 - Cors
+- Custom error handling.
 
 ### Planned
 
@@ -46,11 +47,11 @@ HTTP is a lightweight and simple HTTP server for FiveM, inspired by the syntax o
 - Integration with databases.
 - HTML Template support.
 - New version warning.
+- Refactor route search.
 
 ### Under Development
 
 - Request validation and sanitization.
-- Custom error handling.
 
 ## Usage
 

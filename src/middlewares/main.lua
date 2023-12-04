@@ -82,7 +82,7 @@ end
 
 middlewares.cors = function(cfgOptions)
     local options = Config.defaultMiddlewareOptions.cors
-    options = utils.destructuring(options,cfgOptions or {})
+    options = Utils.destructuring(options,cfgOptions or {})
     if type(options.origin) ~= "table" and type(options.origin) ~= "string" then
         error("invalid cors configuration")
     end

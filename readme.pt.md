@@ -37,6 +37,7 @@ HTTP é um servidor HTTP leve e simples para FiveM, inspirado na sintaxe do Expr
 - Análise de cookies.
 - Serviço de arquivos estáticos.
 - Cors
+- Manipulação de erros personalizada.
 
 ### Planejados
 
@@ -46,11 +47,11 @@ HTTP é um servidor HTTP leve e simples para FiveM, inspirado na sintaxe do Expr
 - Integração com bancos de dados.
 - Suporte a modelos HTML.
 - Aviso de nova versão.
+- Refatorar busca de rota.
 
 ### Em Desenvolvimento
 
 - Validação e saneamento de solicitações.
-- Manipulação de erros personalizada.
 
 ## Uso
 
