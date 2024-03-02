@@ -15,7 +15,7 @@ app.use(cookies())
 app.use(cors({ origin = {"www.mapree.dev","mapree.dev"} }))
 
 -- Route to handle static files
-app.use("/public",static({ folder = "/example/public", },{ maxAge = 86400 }))
+app.use("/public",static("/example/public",{ maxAge = 86400, blockExtension={"jpg"} }))
 
 -- Route to handle JSON response
 app.get("/testing", function(req, res, next)
@@ -25,6 +25,11 @@ end)
 -- Default route for GET request
 app.get("/",function(req, res, next)
     res.send("Hello Fivem")
+end)
+
+-- Route for GET request at '/redirect'
+app.get("/redirect",function(req,res)
+    res.redirect("https://www.google.com")
 end)
 
 -- Route for GET request at '/error'
@@ -44,7 +49,8 @@ end)
 
 -- Build http handler
 local handler = app.listen(function()
-    print("HTTP server listening on http://localhost:30120/"..GetCurrentResourceName().."/")
+    local rsc = GetCurrentResourceName()
+    print("HTTP server listening on http://localhost:30120/"..rsc.."/ or https://"..GetConvar("web_baseUrl","").."/"..rsc.."/")
 end)
 
 -- Set the HTTP handler

@@ -7,8 +7,10 @@ return function(res,appInstance)
 
     self.data.status = 200
     self.data.headers = {}
+    self.headersSent = false
 
     local function sendHTTPHead()
+        self.headersSent = true
         self.setHeader("x-powered-by","MapreeDev")
         for k,w in pairs(self.data.headers) do
             if type(w) ~= "string" then self.data.headers[k] = tostring(self.data.headers[k]) end
@@ -22,12 +24,27 @@ return function(res,appInstance)
 
     self.send = function(body,onlyJson)
         if type(body) == "table" or onlyJson then
-            self.setHeader("Content-Type","application/json")
+            self.type("json")
+            -- self.setHeader("Content-Type","application/json")
             body = json.encode(body)
         end
         sendHTTPHead()
         res.send(body or "")
         return self
+    end
+
+    self.redirect = function(statusCode,targetUrl)
+        if not targetUrl then
+            targetUrl = targetUrl
+            statusCode = 302
+        end
+        self.status(statusCode)
+        self.setHeader("Location",targetUrl)
+        sendHTTPHead()
+    end
+
+    self.type = function(ext)
+        self.setHeader("Content-Type",Utils.getMimetypeFromExtension(ext))
     end
 
     self.status = function(statusCode)

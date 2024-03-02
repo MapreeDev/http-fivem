@@ -13,5 +13,7 @@ return function(req,appInstance)
     self["cache-control"] = req["Cache-Control"]
     self["accept-language"] = req["Accept-Language"]
 
+    self.hxr = self.headers["X-Requested-With"] == "XMLHttpRequest"
+
     return self
 end

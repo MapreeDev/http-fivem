@@ -158,32 +158,17 @@ utils.getMimetypeFromExtension = function(extension)
     return Config.defaultMiddlewareOptions.static.extensionToMimetype[extension] or Config.defaultMiddlewareOptions.static.defaultMimeType
 end
 
--- utils.parseError = function(errorMessage)
---     local errorInfo = {}
-
---     errorInfo.type, errorInfo.message = errorMessage:match('^{"type":"([^"]*)","message":"(.-)"}$')
-
---     if not errorInfo.type then
---         -- Se não conseguir extrair o tipo de erro, assume que é um formato desconhecido
---         errorInfo.type = "UnknownErrorFormat"
---         errorInfo.message = errorMessage
---         return errorInfo
---     end
-
---     -- Tenta extrair dados personalizados
---     local customData = errorMessage:match('{"type":"[^"]*","message":".-","(.-)"}')
---     if customData then
---         local success, data = pcall(load("return {" .. customData .. "}"))
---         if success then
---             errorInfo.customData = data
---         else
---             errorInfo.customData = { ["_raw"] = customData }
---         end
---     else
---         errorInfo.customData = {}
---     end
-
---     return errorInfo
--- end
+utils.getExtensionFromMimetype = function(mimeType)
+    local extension = nil
+    for sExtension,sMimetype in pairs(Config.defaultMiddlewareOptions.static.extensionToMimetype) do
+        if sMimetype == mimeType then
+            print("ASDD",sMimeType,mimeType)
+            extension = sExtension
+            break;
+        end
+    end
+    if not extension then extension = "txt" end
+    return extension
+end
 
 return utils

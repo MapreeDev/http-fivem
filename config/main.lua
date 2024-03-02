@@ -17,18 +17,25 @@ config.defaultMiddlewareOptions = {
         -- exposedHeaders = {}
     },
     static = {
-        extensionToMimetype = {
+        extensionToMimetype = { -- https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
             ["txt"] = "text/plain",
             ["html"] = "text/html",
             ["css"] = "text/css",
             ["js"] = "application/javascript",
             ["json"] = "application/json",
-            ["xml"] = "application/xml",
             ["png"] = "image/png",
             ["jpg"] = "image/jpeg",
             ["jpeg"] = "image/jpeg",
             ["gif"] = "image/gif",
             ["pdf"] = "application/pdf",
+            ["7z"] = "application/x-7z-compressed",
+            ["zip"] = "application/zip",
+            ["xml"] = "application/xml",
+            ["woff"] = "font/woff",
+            ["woff2"] = "font/woff2",
+            ["webp"] = "image/webp",
+            ["tar"] = "application/x-tar",
+            ["svg"] = "application/svg+xml",
         },
         defaultMimeType = "application/octet-stream"
     }
