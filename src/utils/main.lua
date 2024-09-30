@@ -155,12 +155,19 @@ utils.urlParser = function(url)
 end
 
 utils.getMimetypeFromExtension = function(extension)
-    return Config.defaultMiddlewareOptions.static.extensionToMimetype[extension] or Config.defaultMiddlewareOptions.static.defaultMimeType
+    local mimeType = Config.defaultMiddlewareOptions.static.extensionToMimetype[extension] or Config.defaultMiddlewareOptions.static.defaultMimeType
+    if type(mimeType) == "table" then
+        mimeType = mimeType[1]
+    end
+    return mimeType
 end
 
 utils.getExtensionFromMimetype = function(mimeType)
     local extension = nil
     for sExtension,sMimetype in pairs(Config.defaultMiddlewareOptions.static.extensionToMimetype) do
+        if type(sMimetype) == "table" then
+            sMimetype = sMimetype[1]
+        end
         if sMimetype == mimeType then
             print("ASDD",sMimeType,mimeType)
             extension = sExtension
