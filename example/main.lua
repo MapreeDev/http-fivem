@@ -4,7 +4,7 @@ local cookies = require "src.middlewares.cookies"
 local static = require "src.middlewares.static"
 local express = require "src.main"
 local Error = require "src.utils.error"
-local fileParser = require"src.middlewares.files"
+local fileParser = require"src.middlewares.fileParser"
 
 local app = express({
     development = true
@@ -68,7 +68,6 @@ end)
 
 -- Build http handler
 local handler = app.listen(function()
-    print(#"\255\216\255")
     local rsc = GetCurrentResourceName()
     print("HTTP server listening on http://localhost:30120/"..rsc.."/ or https://"..GetConvar("web_baseUrl","").."/"..rsc.."/")
 end)
