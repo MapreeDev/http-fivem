@@ -32,7 +32,7 @@ return function(req,appInstance)
         return self
     end
 
-    if self.headers["Content-Length"] and tonumber(self.headers["Content-Length"]) > 0 then
+    if self.contentType ~= nil or self.headers["Content-Length"] ~= nil then
         local bodyRead = false
         if self.contentType == "application/octet-stream" then
             req.setDataHandler(function(body)
@@ -44,6 +44,7 @@ return function(req,appInstance)
             req.setDataHandler(function(body)
                 bodyRead = true
                 self.body = body
+                self.rawBody = body
             end)
         end
         while not bodyRead do

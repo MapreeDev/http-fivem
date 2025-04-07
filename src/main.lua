@@ -86,7 +86,8 @@ return function(options)
             local status,err = pcall(function()
                 next()
             end)
-            if not status and err then
+            if not status then
+                if not err then err = "Unknown error" end
                 Utils.logger("Error in route: "..err,self.data.isDevelopment)
                 if self.data.errorHandling then
                     local status,err = pcall(function()

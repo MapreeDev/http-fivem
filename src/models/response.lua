@@ -10,6 +10,7 @@ return function(res,appInstance)
     self.headersSent = false
 
     local function sendHTTPHead()
+        if self.headersSent then return end
         self.headersSent = true
         self.setHeader("x-powered-by","MapreeDev")
         for k,w in pairs(self.data.headers) do
@@ -30,6 +31,11 @@ return function(res,appInstance)
         end
         sendHTTPHead()
         res.send(body or "")
+        return self
+    end
+
+    self.writeHead = function()
+        sendHTTPHead()
         return self
     end
 
